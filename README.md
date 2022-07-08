@@ -1,37 +1,36 @@
 # NixLRU
 
-Implementação de cache local para Nix usando Golang
+Implementation of a local Nix binary cache in Golang
 
-Não tem nada que impede de ser executado em distribuições Linux não NixOS, ou até mesmo sistemas operacionais não Linux.
+It is able to run on non Nix based Linux distributions and Windows.
 
-## Como usar?
+## How to use?
 
-nix-cache-lru [flags] [caches upstream...]
+nix-cache-lru [flags] [upstream caches...]
 
-- flags: podem ser consultadas através de nix-cache-lru --help
-- caches upstream: todos os caches, por ordem de prioridade, que serão consultados em caso de cache miss
+- flags: can be consulted by running `nix-lru --help`
+- upstream caches: all the caches, sorted by priority, that will be consulted in case of a cache miss
   - ex: https://cache.nixos.org https://giropops.cachix.org
 
-## Comportamento
-- Este software é utilizado como substituter/cache binário de um ou mais clientes
-- Os clientes consultam um narinfo de um componente nix
-  - O software checa se esse narinfo já tá em cache
-  - Se não estiver, tenta baixar de cada cache até achar
-  - Retorna o dado do narinfo obtido para o usuário ou erro 404
-- Os clientes baixam o nar referenciado no narinfo
-  - O software checa se esse nar já está em cache
-  - Se não estiver, tenta baixar de cada cache até achar
-  - Retorna o nar obtido para o usuário ou erro 404
+## Behavior
+- This software is used as a substituter/binary cache for one or more clients
+- The clients query a narinfo of a nix component
+    - The software checks if the narinfo is already in the cache
+    - If not, try to download from all the caches until it finds
+    - Returns the narinfo data for the user, or a 404 error
+- The clients query a nar file referenced by the narinfo
+    - The software checks if the nar is in the cache already
+    - If not, try to download from each cache until it finds
+    - Returns the obtained nar for the user, or a 404 error
 
-Erros no processo são logados e tratados como erro 500 (internal server error)
+Errors in the process are reported and treated with error 500 (internal server error)
 
-Processos que gravam no cache local não são paralelizados e apenas um ocorre por vez
+Processes that write in the local cache are not paralelized, cache hits are paralellized
 
-Cache hits são paralelizados
 
-## Comandos preparados para uso futuro
+## Commands prepared for future use
 
-Listar arquivos NAR pela data de criação e tamanho ordenando pela data de criação
+List nar files by the creation time and size sorting by the creation time
 
 ```sh
 find /tmp/lrucache -type f -printf "%T@ %s %p\n" | sort -n | grep -v -e '.narinfo$'

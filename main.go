@@ -9,12 +9,10 @@ import (
 	"net/http"
 	"os"
 	"path"
-	// "path/filepath"
 	"regexp"
 	"sync"
 	"time"
 
-	// "github.com/davecgh/go-spew/spew"
 	"github.com/google/uuid"
 )
 
@@ -52,7 +50,6 @@ func (l *LRUCache) HandleNARInfoRequest(w http.ResponseWriter, r *http.Request) 
 	}
 	w.WriteHeader(200)
 	io.Copy(w, f)
-	log.Println("narinfo")
 }
 
 func (l *LRUCache) HandleNARRequest(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +72,6 @@ func (l *LRUCache) HandleNARRequest(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(200)
 	io.Copy(w, f)
-	log.Println("nar itself")
 }
 
 func (l *LRUCache) HandleLock(w http.ResponseWriter, r *http.Request) {
@@ -130,8 +126,7 @@ func (l *LRUCache) FetchNarinfo(hash string) (string, error) {
 	narinfoFile := path.Join(l.GetNarinfoDir(), fmt.Sprintf("%s.narinfo", hash))
 	if _, err := os.Stat(narinfoFile); errors.Is(err, os.ErrNotExist) {
 		tempfile := path.Join(l.GetTmpDir(), uuid.New().String())
-		log.Printf("o narinfo %s não existe localmente, baixando...", hash)
-		log.Printf("arquivo temporário: %s", tempfile)
+		log.Printf("the narinfo '%s' doesn't exists locally, downloading to the temporary file '%s'...", hash, tempfile)
 		l.Lock()
 		defer l.Unlock()
 		if _, err := os.Stat(narinfoFile); errors.Is(err, os.ErrNotExist) {
@@ -166,7 +161,7 @@ func (l *LRUCache) FetchNar(hash string) (string, error) {
 	narFile := path.Join(l.GetNarDir(), fmt.Sprintf("%s", hash))
 	if _, err := os.Stat(narFile); errors.Is(err, os.ErrNotExist) {
 		tempfile := path.Join(l.GetTmpDir(), uuid.New().String())
-		log.Printf("o nar %s não existe localmente, baixando para o arquivo temporário '%s'...", hash, tempfile)
+		log.Printf("the nar '%s' doesn't exists locally, downloading to the temporary file '%s'...", hash, tempfile)
 		l.Lock()
 		defer l.Unlock()
 		// e se um processo ficar travado por precisar exatamente do mesmo arquivo que o processo que travou?
@@ -233,18 +228,18 @@ func main() {
 
 
 `)
-	flag.StringVar(&stateDir, "s", "/tmp/lrucache", "Onde guardar o estado do programa")
-	flag.StringVar(&listenAddr, "p", ":8080", "Onde deixar o webserver na escuta")
-	flag.BoolVar(&enableLock, "l", false, "Ativar a rota /lock para previnir data races em limpezas manuais porém com o risco de ataques de negação de serviço facilitados")
-	flag.BoolVar(&logTicks, "t", false, "Logar os ticks para debugar quando o mutex estiver sendo bloqueado")
+	flag.StringVar(&stateDir, "s", "/tmp/lrucache", "Where to store the program state")
+	flag.StringVar(&listenAddr, "p", ":8080", "Where to put the webserver to listen")
+	flag.BoolVar(&enableLock, "l", false, "Enable the /lock routeto prevent data races in manual cleanups but with a risk of easier DoS attacks")
+	flag.BoolVar(&logTicks, "t", false, "Log the ticks to debug when the state mutex is being locked")
 	flag.Parse()
 
-	handleFatalError(os.MkdirAll(stateDir, 0700), "não foi possível criar a pasta de estado")
+	handleFatalError(os.MkdirAll(stateDir, 0700), "can't create the state folder")
 	lru := NewLRUCache(stateDir, flag.Args()...)
-	log.Printf("Na escuta em '%s'", listenAddr)
-	log.Printf("Guardando estado em '%s'", stateDir)
+	log.Printf("Listening on '%s'", listenAddr)
+	log.Printf("Storing state in '%s'", stateDir)
 	if logTicks {
-		log.Printf("Iniciando ticker com intervalo de 1s")
+		log.Printf("Starting ticker with 1s interval")
 		go func() {
 			for true {
 				lru.Tick()
@@ -253,8 +248,8 @@ func main() {
 		}()
 	}
 	if enableLock {
-		log.Printf("AVISO: Rota /lock habilitada")
+		log.Printf("WARN: /lock route enabled")
 		lru.EnableLockRoute = true
 	}
-	handleFatalError(http.ListenAndServe(listenAddr, lru), "não foi possível iniciar a aplicação")
+	handleFatalError(http.ListenAndServe(listenAddr, lru), "can't start the application")
 }
