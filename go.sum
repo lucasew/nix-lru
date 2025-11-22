@@ -7,3 +7,4 @@ github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+
 github.com/lucasew/gocfg v0.0.0-20220218183335-be6b7efdb5ab h1:DLhXz1KPJFpyBYMGFipgKB3edLryK5x9WtskFctYh58=
 github.com/lucasew/gocfg v0.0.0-20220218183335-be6b7efdb5ab/go.mod h1:kkmvQkm0PNEN5T8SD4w1ZKNu3iBrsIp951uehrO0cRM=
 github.com/lucasew/gocfg v0.0.0-20250602182938-41dffe0274da/go.mod h1:kkmvQkm0PNEN5T8SD4w1ZKNu3iBrsIp951uehrO0cRM=
+github.com/lucasew/gocfg v0.0.0-20251122021911-09c8b9f23972/go.mod h1:kkmvQkm0PNEN5T8SD4w1ZKNu3iBrsIp951uehrO0cRM=
