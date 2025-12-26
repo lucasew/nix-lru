@@ -8,3 +8,4 @@ github.com/lucasew/gocfg v0.0.0-20220218183335-be6b7efdb5ab h1:DLhXz1KPJFpyBYMGF
 github.com/lucasew/gocfg v0.0.0-20220218183335-be6b7efdb5ab/go.mod h1:kkmvQkm0PNEN5T8SD4w1ZKNu3iBrsIp951uehrO0cRM=
 github.com/lucasew/gocfg v0.0.0-20250602182938-41dffe0274da/go.mod h1:kkmvQkm0PNEN5T8SD4w1ZKNu3iBrsIp951uehrO0cRM=
 github.com/lucasew/gocfg v0.0.0-20251122021911-09c8b9f23972/go.mod h1:kkmvQkm0PNEN5T8SD4w1ZKNu3iBrsIp951uehrO0cRM=
+github.com/lucasew/gocfg v0.0.0-20251220230948-b6abd4517e0e/go.mod h1:kkmvQkm0PNEN5T8SD4w1ZKNu3iBrsIp951uehrO0cRM=
